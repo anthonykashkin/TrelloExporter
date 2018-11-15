@@ -1,11 +1,14 @@
 package ru.allwrite.TrelloExporter.trello;
 
 import com.julienvey.trello.domain.Card;
+import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Service
 public class TrelloService{
     private IndexStorage storage;
     private TrelloConnector connector;
@@ -28,10 +31,17 @@ public class TrelloService{
         return nonExportedCard;
     }
 
-    public Map<String, String> execute() {
+    public List<Map<String, String>> execute() {
         //TODO transform to map
         //TODO add xml config for fields
-        List<Card> cards = getCards();
-
+        return getCards()
+                .stream()
+                .map(s -> {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("name", s.getName());
+                    map.put("desc", s.getDesc());
+                    return map;
+                })
+                .collect(Collectors.toList());
     }
 }
